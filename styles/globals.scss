@@ -1,0 +1,114 @@
+$body: #161616;
+$primaryBackgroundHolder: #0c0c0c;
+$primaryBackground: #000;
+
+$primaryBackgroundBorder: #575757;
+
+:root {
+  color-scheme: light dark;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  border: none;
+  background: none;
+  cursor: pointer;
+}
+
+body {
+  background: $body;
+}
+
+.collapse {
+  width: 56px;
+}
+
+.expand {
+  width: 266px;
+}
+
+.sidebar {
+  min-width: 56px;
+  height: calc(100vh - 8px);
+  padding: 4px;
+  border-radius: 4px;
+  background: $primaryBackgroundHolder;
+  display: flex;
+  position: absolute;
+  inset: 4px auto 4px 4px;
+  transition: width 200ms ease;
+}
+
+.sidebar::before {
+  content: "";
+  border-radius: 4px;
+  background: $primaryBackground;
+  position: absolute;
+  inset: 4px;
+}
+
+.sidebar > div {
+  position: relative;
+  z-index: 1;
+}
+
+.sidebar > div:first-child {
+  width: 48px;
+  padding: 8px 0 4px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+  a {
+    width: 40px;
+    height: 40px;
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .button:not(:last-child):not(:nth-last-child(3)) {
+    margin: 0 0 4px;
+  }
+
+  .button:nth-last-child(3) {
+    margin: auto 0 4px;
+  }
+}
+
+.sidebar > div:nth-child(2) {
+  width: 210px;
+  padding: 8px 8px 4px;
+
+  > a {
+    /* TODO: Remove it later */
+    height: 40px;
+    margin: 0 0 16px;
+    display: flex;
+    align-items: center;
+
+    img {
+      height: 32px;
+      filter: invert(1);
+    }
+  }
+}
+
+.button.onlyIcon {
+  width: 40px;
+  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
