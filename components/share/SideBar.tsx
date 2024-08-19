@@ -1,10 +1,13 @@
 "use client";
 import {
+  AuthorBrokenIcon,
   BackpackIcon,
   BikeIcon,
   BrowseAnalyticsIcon,
   CartBrokenIcon,
+  ColorPaletteBrokenIcon,
   CompassBrokenIcon,
+  EditBrokenIcon,
   GoogleAnalyticsIcon,
   GooglePageSpeedInsightsIcon,
   GridBrokenIcon,
@@ -155,7 +158,43 @@ export const SideBar = () => {
           )}
 
           {state.menu === Menu.TRAVEL && <div>Travel</div>}
-          {state.menu === Menu.DISCOVER && <div>Discover</div>}
+          {state.menu === Menu.DISCOVER && (
+            <div>
+              <nav>
+                <h4>Discover</h4>
+
+                <Link href="/posts">
+                  <EditBrokenIcon />
+                  <span>Post</span>
+                </Link>
+                <Link href="/pages">
+                  <ColorPaletteBrokenIcon />
+                  <span>Page</span>
+                </Link>
+                <Link href="/authors">
+                  <AuthorBrokenIcon />
+                  <span>Author</span>
+                </Link>
+              </nav>
+
+              <nav>
+                <h4>Create</h4>
+
+                <Link href="/posts">
+                  <EditBrokenIcon />
+                  <span>Post</span>
+                </Link>
+                <Link href="/pages">
+                  <ColorPaletteBrokenIcon />
+                  <span>Page</span>
+                </Link>
+                <Link href="/authors">
+                  <AuthorBrokenIcon />
+                  <span>Author</span>
+                </Link>
+              </nav>
+            </div>
+          )}
           {state.menu === Menu.MARKETPLACE && <div>Marketplace</div>}
           {state.menu === Menu.HOTEL && <div>Hotel</div>}
           {state.menu === Menu.RIDER && <div>Rider</div>}

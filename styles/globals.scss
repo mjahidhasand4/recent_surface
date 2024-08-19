@@ -29,14 +29,6 @@ body {
   background: $body;
 }
 
-.collapse {
-  width: 56px;
-}
-
-.expand {
-  width: 270px;
-}
-
 .sidebar {
   min-width: 56px;
   height: calc(100vh - 8px);
@@ -47,6 +39,14 @@ body {
   position: absolute;
   inset: 4px auto 4px 4px;
   transition: width 200ms ease;
+
+  &.collapse {
+    width: 56px;
+  }
+
+  &.expand {
+    width: 270px;
+  }
 }
 
 .sidebar::before {
@@ -64,7 +64,7 @@ body {
 
 .sidebar > div:first-child {
   width: 48px;
-  padding: 8px 0 4px;
+  padding: 8px 4px 4px;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -95,7 +95,7 @@ body {
   > a {
     /* TODO: Remove it later */
     height: 40px;
-    margin: 0 0 16px;
+    margin: 0 0 24px;
     display: flex;
     align-items: center;
 
@@ -103,6 +103,10 @@ body {
       height: 32px;
       filter: invert(1);
     }
+  }
+
+  > div {
+    animation: blink 350ms ease;
   }
 
   h4 {
@@ -148,4 +152,15 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+@keyframes blink {
+  0% {
+    opacity: 0;
+    transition: opacity 350ms ease;
+  }
+  100% {
+    opacity: 1;
+    transition: opacity 350ms ease;
+  }
 }

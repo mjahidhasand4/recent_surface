@@ -366,3 +366,97 @@ export const BrowseAnalyticsIcon = () => {
     </svg>
   );
 };
+
+export const EditBrokenIcon = () => {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M21 13V17C21 19.7614 18.7614 22 16 22H8C5.23858 22 3 19.7614 3 17V9C3 6.23858 5.23858 4 8 4H12"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M13.2958 6.87469L16.7465 3.4187C17.527 2.63706 18.7928 2.63658 19.5739 3.41763L21.2334 5.07712C22.0078 5.85151 22.0158 7.10516 21.2514 7.88943L13.8224 15.5116C13.258 16.0907 12.4839 16.4172 11.6755 16.4172L9.40332 16.4171C8.76638 16.4171 8.25772 15.8861 8.28451 15.2493V15.2493L8.33363 14.0815L8.38275 12.9137V12.9137C8.41434 12.1627 8.72648 11.4509 9.25741 10.9192L10.8638 9.31032"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M17.678 7.60687L19.3641 9.29297"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </svg>
+  );
+};
+
+export const ColorPaletteBrokenIcon = () => {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M2 10.5V5C2 3.34315 3.34315 2 5 2H9C10.6569 2 12 3.34315 12 5V19C12 20.6569 10.6569 22 9 22H5C3.34315 22 2 20.6569 2 19V13.5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M14.6074 3.29044C15.542 3.12202 16.5411 3.39899 17.2635 4.12136L20.0919 6.94978C21.2635 8.12136 21.2635 10.0209 20.0919 11.1924L14.6074 16.6769"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M14 22H19C20.6569 22 22 20.6569 22 19V15C22 14.6494 21.9398 14.3128 21.8293 14"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <circle cx="7" cy="18" r="1" fill="currentColor" />
+    </svg>
+  );
+};
+
+export const AuthorBrokenIcon = () => {
+  return (
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+      <path
+        d="M8.80855 8.40426C8.80855 10.2844 10.3327 11.8085 12.2128 11.8085C14.0929 11.8085 15.6171 10.2844 15.6171 8.40426C15.6171 6.52414 14.0929 5 12.2128 5"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M6.25537 16.8594C6.25537 16.1272 6.71567 15.474 7.40524 15.2277V15.2277C10.5141 14.1174 13.9115 14.1174 17.0204 15.2277V15.2277C17.71 15.474 18.1703 16.1272 18.1703 16.8594V17.979C18.1703 18.9896 17.2752 19.7659 16.2748 19.6229L15.9412 19.5753C13.4682 19.222 10.9575 19.222 8.48442 19.5753L8.15087 19.6229C7.15044 19.7659 6.25537 18.9896 6.25537 17.979V16.8594Z"
+        stroke="currentColor"
+        strokeWidth="1.5"
+      />
+      <path
+        d="M17.3191 11.9028C18.7964 11.9028 19.9939 10.7052 19.9939 9.22799C19.9939 7.75076 18.7964 6.55322 17.3191 6.55322"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M20.2486 18.0051L20.5106 18.0425C21.2967 18.1548 22 17.5448 22 16.7508V15.8711C22 15.2958 21.6383 14.7826 21.0965 14.5891C20.5561 14.3961 20.0045 14.2458 19.4468 14.1382"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M6.68088 11.9028C5.20364 11.9028 4.0061 10.7052 4.0061 9.22799C4.0061 7.75076 5.20364 6.55322 6.68088 6.55322"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+      <path
+        d="M3.75143 18.0051L3.48935 18.0425C2.7033 18.1548 2.00003 17.5448 2.00003 16.7508V15.8711C2.00003 15.2958 2.3617 14.7826 2.9035 14.5891C3.44395 14.3961 3.99549 14.2458 4.55322 14.1382"
+        stroke="currentColor"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+};
