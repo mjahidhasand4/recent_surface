@@ -1,19 +1,24 @@
 "use client";
-import Link from "next/link";
-import { useState } from "react";
-import { Button } from ".";
 import {
   BackpackIcon,
   BikeIcon,
+  BrowseAnalyticsIcon,
   CartBrokenIcon,
   CompassBrokenIcon,
+  GoogleAnalyticsIcon,
+  GooglePageSpeedInsightsIcon,
   GridBrokenIcon,
   LetterBrokenIcon,
+  PulseIcon,
   RouteBrokenIcon,
   SettingsIcon,
   TrashBinBrokenIcon,
+  WalletBrokenIcon,
 } from "@/components/icons";
 import { useClickOutside } from "@/hooks/share";
+import Link from "next/link";
+import { useState } from "react";
+import { Button } from ".";
 
 enum Menu {
   DASHBOARD = "Dashboard",
@@ -116,7 +121,34 @@ export const SideBar = () => {
                 <h4>Dashboard</h4>
 
                 <Link href="/">
+                  <WalletBrokenIcon />
                   <span>Balance Overview</span>
+                </Link>
+                <Link href="/">
+                  <PulseIcon />
+                  <span>User Activity</span>
+                </Link>
+              </nav>
+
+              <nav>
+                <h4>Analytics</h4>
+
+                <Link href="/">
+                  <BrowseAnalyticsIcon />
+                  <span>Self Analytics</span>
+                </Link>
+                <Link href="/">
+                  <GoogleAnalyticsIcon />
+                  <span>Google Analytics</span>
+                </Link>
+              </nav>
+
+              <nav>
+                <h4>Inspect</h4>
+
+                <Link href="/">
+                  <GooglePageSpeedInsightsIcon />
+                  <span>Google PageSpeed Insight</span>
                 </Link>
               </nav>
             </div>

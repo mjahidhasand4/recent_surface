@@ -34,7 +34,7 @@ body {
 }
 
 .expand {
-  width: 266px;
+  width: 270px;
 }
 
 .sidebar {
@@ -89,7 +89,8 @@ body {
 
 .sidebar > div:nth-child(2) {
   width: 210px;
-  padding: 8px 8px 4px;
+  padding: 8px 4px 4px;
+  overflow: hidden;
 
   > a {
     /* TODO: Remove it later */
@@ -102,6 +103,42 @@ body {
       height: 32px;
       filter: invert(1);
     }
+  }
+
+  h4 {
+    font: 600 12px "Segoe UI";
+    color: #3f3f3f;
+    margin: 0 0 8px;
+  }
+
+  nav {
+    a {
+      white-space: nowrap;
+      height: 32px;
+      padding: 0 4px;
+      border-radius: 4px;
+      display: block;
+    }
+
+    a:not(:last-child) {
+      margin: 0 0 4px;
+    }
+  }
+
+  nav:not(:last-child) {
+    margin: 0 0 24px;
+  }
+
+  a:not(:has(svg)),
+  span {
+    font: 14px/32px "Segoe UI";
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+    margin: 0 8px 0 0;
+    translate: 0 3px;
   }
 }
 
