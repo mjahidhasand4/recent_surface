@@ -1,9 +1,9 @@
-import { MediaLibraryProvider } from ".";
+import { FileManagerProvider } from ".";
 
 interface Props {
   children: React.ReactNode;
 }
 
 export const Providers: React.FC<Props> = (props) => {
-  return <MediaLibraryProvider>{props.children}</MediaLibraryProvider>;
+  return <FileManagerProvider>{props.children}</FileManagerProvider>;
 };

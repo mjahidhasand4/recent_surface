@@ -1,1 +1,1 @@
-export * from "./MediaLibrary";
+export * from "./FileManager";

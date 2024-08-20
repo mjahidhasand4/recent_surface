@@ -17,11 +17,12 @@ import {
   SettingsIcon,
   TrashBinBrokenIcon,
   WalletBrokenIcon,
+  FileManagerIcon,
 } from "@/components/icons";
 import { useClickOutside } from "@/hooks/share";
 import Link from "next/link";
 import { useState } from "react";
-import { Button } from ".";
+import { Button, Link as CustomLink } from ".";
 
 enum Menu {
   DASHBOARD = "Dashboard",
@@ -95,6 +96,7 @@ export const SideBar = () => {
           onClick={() => open(Menu.HOTEL)}
         />
         <Button onlyIcon icon={<BikeIcon />} onClick={() => open(Menu.RIDER)} />
+        <CustomLink href="file-manager" onlyIcon icon={<FileManagerIcon />} />
 
         <Button
           onlyIcon

@@ -1,2 +1,2 @@
-export * from "./media-library";
+export * from "./file-manager";
 export * from "./providers";
