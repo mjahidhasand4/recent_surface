@@ -56,11 +56,21 @@ body {
 }
 
 .overlay {
-  background: rgba(black, 0.64);
+  backdrop-filter: blur(12px);
+  background: rgba(black, 0.40);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   position: absolute;
   inset: 0;
   z-index: 1;
   overflow: hidden;
+
+  .media-library {
+    width: 90vw;
+    height: 90vh;
+    background: #000;
+  }
 }
 
 /* Header Start */
@@ -489,5 +499,53 @@ main.editor > div:last-child {
 
   &::-webkit-scrollbar-thumb:hover {
     background-color: #555;
+  }
+}
+
+.gradient-border {
+  --border-width: 1px;
+
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 300px;
+  height: 200px;
+  font-family: Lato, sans-serif;
+  font-size: 2.5rem;
+  text-transform: uppercase;
+  color: white;
+  background: #222;
+  border-radius: 10px;
+
+  &::after {
+    position: absolute;
+    content: "";
+    top: calc(-1 * var(--border-width));
+    left: calc(-1 * var(--border-width));
+    z-index: -1;
+    width: calc(100% + var(--border-width) * 2);
+    height: calc(100% + var(--border-width) * 2);
+    background: linear-gradient(
+      60deg,
+      hsl(224, 85%, 66%),
+      hsl(269, 85%, 66%),
+      hsl(314, 85%, 66%),
+      hsl(359, 85%, 66%),
+      hsl(44, 85%, 66%),
+      hsl(89, 85%, 66%),
+      hsl(134, 85%, 66%),
+      hsl(179, 85%, 66%)
+    );
+    background-size: 300% 300%;
+    background-position: 0 50%;
+    border-radius: 10px;
+    animation: moveGradient 4s alternate infinite;
+  }
+}
+
+@keyframes moveGradient {
+  50% {
+    background-position: 100% 50%;
   }
 }

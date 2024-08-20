@@ -13,7 +13,9 @@ export const MediaLibraryProvider: React.FC<Props> = (props) => {
   return (
     <MediaLibraryContext.Provider value={{}}>
       <Portal>
-        <MediaLibrary className="overlay" />
+        <div className="overlay">
+          <MediaLibrary className="overlap gradient-border" />
+        </div>
       </Portal>
 
       {props.children}
