@@ -3,7 +3,10 @@ import { Template } from "@/components/share";
 const Home = () => {
   return (
     <Template>
-      <main></main>
+      <main className="homepage global">
+        <div className="overlap"></div>
+        <div className="overlap"></div>
+      </main>
     </Template>
   );
 };

@@ -1,6 +1,6 @@
 "use client";
 import {
-  AuthorBrokenIcon,
+  UsersBrokenIcon,
   BackpackIcon,
   BikeIcon,
   BrowseAnalyticsIcon,
@@ -31,6 +31,7 @@ enum Menu {
   HOTEL = "Hotel",
   RIDER = "Rider",
   MAIL = "Mail",
+  USERS = "USERS",
   TRASH = "Trash",
   SETTINGS = "Settings",
 }
@@ -61,7 +62,7 @@ export const SideBar = () => {
   return (
     <aside
       ref={ref}
-      className={`sidebar${state.expand ? " expand" : " collapse"}`}
+      className={`sidebar${state.expand ? " expand" : " collapse"} overlap`}
     >
       <div>
         <Link href="/">
@@ -99,6 +100,11 @@ export const SideBar = () => {
           onlyIcon
           icon={<LetterBrokenIcon />}
           onClick={() => open(Menu.MAIL)}
+        />
+        <Button
+          onlyIcon
+          icon={<UsersBrokenIcon />}
+          onClick={() => open(Menu.USERS)}
         />
         <Button
           onlyIcon
@@ -171,26 +177,18 @@ export const SideBar = () => {
                   <ColorPaletteBrokenIcon />
                   <span>Page</span>
                 </Link>
-                <Link href="/authors">
-                  <AuthorBrokenIcon />
-                  <span>Author</span>
-                </Link>
               </nav>
 
               <nav>
                 <h4>Create</h4>
 
-                <Link href="/posts">
+                <Link href="/editor">
                   <EditBrokenIcon />
                   <span>Post</span>
                 </Link>
-                <Link href="/pages">
+                <Link href="/page">
                   <ColorPaletteBrokenIcon />
                   <span>Page</span>
-                </Link>
-                <Link href="/authors">
-                  <AuthorBrokenIcon />
-                  <span>Author</span>
                 </Link>
               </nav>
             </div>
@@ -199,6 +197,27 @@ export const SideBar = () => {
           {state.menu === Menu.HOTEL && <div>Hotel</div>}
           {state.menu === Menu.RIDER && <div>Rider</div>}
           {state.menu === Menu.MAIL && <div>Mail</div>}
+          {state.menu === Menu.USERS && (
+            <div>
+              <nav>
+                <h4>Users</h4>
+
+                <Link href="/users">
+                  <UsersBrokenIcon />
+                  <span>All Users</span>
+                </Link>
+              </nav>
+
+              <nav>
+                <h4>New</h4>
+
+                <Link href="/user">
+                  <UsersBrokenIcon />
+                  <span>User</span>
+                </Link>
+              </nav>
+            </div>
+          )}
           {state.menu === Menu.TRASH && <div>Trash</div>}
           {state.menu === Menu.SETTINGS && <div>Settings</div>}
         </div>

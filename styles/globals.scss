@@ -25,20 +25,112 @@ button {
   cursor: pointer;
 }
 
+input,
+textarea {
+  border: none;
+  outline: none;
+  background: none;
+}
+
 body {
   background: $body;
 }
 
+.overlap {
+  border-radius: 4px;
+  background: $primaryBackgroundHolder;
+  position: relative;
+
+  &::before {
+    content: "";
+    border-radius: 4px;
+    background: $primaryBackground;
+    position: absolute;
+    inset: 4px;
+    z-index: 0;
+  }
+
+  > * {
+    position: relative;
+  }
+}
+
+.overlay {
+  background: rgba(black, 0.64);
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  overflow: hidden;
+}
+
+/* Header Start */
+header {
+  width: calc(100vw - 68px);
+  margin: 4px 0 0 64px;
+}
+
+header.global {
+  height: 56px;
+  padding: 0 8px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  position: relative;
+
+  > * {
+    position: relative;
+    z-index: 1;
+  }
+
+  button:nth-last-child(3) {
+    margin: 0 0 0 auto;
+  }
+
+  button:not(:last-child) {
+    padding: 6px;
+    border-radius: 10px;
+    background: #161616;
+    display: flex;
+  }
+
+  button:last-child {
+    border: 2px solid white;
+    border-radius: 10px;
+    display: flex;
+
+    img {
+      width: 32px;
+      height: 32px;
+      border-radius: inherit;
+    }
+  }
+}
+
+header.editor {
+  height: 48px;
+  display: flex;
+  gap: 4px;
+}
+
+header.editor > div:first-child {
+  flex: 1;
+}
+
+header.editor > div:last-child {
+  width: 320px;
+}
+/* Header End */
+
+/* SideBar START */
 .sidebar {
   min-width: 56px;
   height: calc(100vh - 8px);
   padding: 4px;
-  border-radius: 4px;
-  background: $primaryBackgroundHolder;
   display: flex;
   position: absolute;
   inset: 4px auto 4px 4px;
   transition: width 200ms ease;
+  z-index: 1;
 
   &.collapse {
     width: 56px;
@@ -47,14 +139,6 @@ body {
   &.expand {
     width: 270px;
   }
-}
-
-.sidebar::before {
-  content: "";
-  border-radius: 4px;
-  background: $primaryBackground;
-  position: absolute;
-  inset: 4px;
 }
 
 .sidebar > div {
@@ -78,11 +162,11 @@ body {
     justify-content: center;
   }
 
-  .button:not(:last-child):not(:nth-last-child(3)) {
+  .button:not(:last-child):not(:nth-last-child(4)) {
     margin: 0 0 4px;
   }
 
-  .button:nth-last-child(3) {
+  .button:nth-last-child(4) {
     margin: auto 0 4px;
   }
 }
@@ -145,13 +229,228 @@ body {
     translate: 0 3px;
   }
 }
+/* SideBar End */
 
+/* Common Main Start */
+main {
+  width: calc(100vw - 68px);
+  margin: 4px 0 0 64px;
+}
+
+main.global {
+  height: calc(100vh - 68px);
+}
+
+main.editor {
+  height: calc(100vh - 60px);
+}
+/* Common Main Start */
+
+/* PAGE START */
+
+/* Homepage START*/
+.homepage {
+  display: flex;
+  gap: 4px;
+}
+
+.homepage > div:first-child {
+  flex: 1;
+}
+
+.homepage > div:last-child {
+  width: 400px;
+}
+/* Homepage END*/
+
+/* Editor START */
+main.editor {
+  display: flex;
+  gap: 4px;
+}
+
+main.editor > div:first-child {
+  flex: 1;
+}
+
+main.editor > div:last-child {
+  width: 320px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+
+  > div:first-child {
+    height: 40px;
+    border-bottom: 1px solid $primaryBackgroundHolder;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+
+    button {
+      flex: 1;
+      font: 14px "Segoe UI";
+      color: #4f4e4e;
+      height: 100%;
+      padding: 0 14px;
+
+      &:first-child {
+        border-radius: 4px 0 0 0;
+      }
+
+      &:last-child {
+        border-radius: 0 4px 0 0;
+      }
+
+      &:hover {
+        color: #aaa;
+      }
+
+      &.active {
+        color: white;
+        background: #ffffff10;
+      }
+    }
+  }
+
+  &.Data {
+    > div:nth-child(2) {
+      flex: 1;
+      overflow: hidden scroll;
+    }
+
+    > div:last-child {
+      height: 32px;
+      border: 1px solid $primaryBackgroundBorder;
+      border-radius: 0 0 4px 4px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      overflow: hidden;
+
+      button {
+        flex: 1;
+        height: 100%;
+        transition: background 350ms ease;
+
+        &:hover,
+        &.active {
+          background: $primaryBackgroundHolder;
+        }
+      }
+    }
+  }
+}
+/* Editor END */
+
+/* PAGE END */
+
+/** Components */
+
+/* Buttons START */
 .button.onlyIcon {
   width: 40px;
   height: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
+}
+/* Buttons END */
+
+/* Input START */
+.input.regular {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  label {
+    font: 500 12px "Segoe UI";
+  }
+
+  input {
+    height: 31px;
+    padding: 3px 7px;
+    border: 1px solid #30363d;
+    border-radius: 3px;
+    box-shadow: inset 0px 1px 0px 0px #0104093d;
+    background: #0a0a0a;
+    transition: all 350ms ease;
+    transition-property: border, background;
+
+    &:focus {
+      border-color: #1f6feb;
+      background: #0d1117;
+    }
+  }
+}
+/* Input END */
+
+/* UI START */
+.masonry {
+  padding: 8px;
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-auto-rows: 128px;
+  gap: 4px;
+
+  > button {
+    border-radius: 4px;
+    background: $primaryBackgroundHolder;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    img {
+      width: 48px;
+      height: 48px;
+      filter: grayscale(1);
+    }
+  }
+
+  > div {
+    border-radius: 4px;
+    position: relative;
+    overflow: hidden;
+
+    img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    div {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      position: absolute;
+      top: 4px;
+      right: 4px;
+
+      > button {
+        width: 16px;
+        height: 16px;
+        border: 1px solid #7a7a7a;
+        border-radius: 50%;
+        backdrop-filter: blur(20px);
+        background: rgba(black, 0.64);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+          width: 10px;
+          height: 10px;
+        }
+      }
+    }
+  }
+}
+
+/* UI END */
+
+.blink {
+  animation: blink 350ms ease;
 }
 
 @keyframes blink {
@@ -162,5 +461,33 @@ body {
   100% {
     opacity: 1;
     transition: opacity 350ms ease;
+  }
+}
+
+.scrollbar {
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #888 #f1f1f1;
+  }
+
+  /* WebKit Browsers (Chrome, Safari, Edge) */
+  &::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  &::-webkit-scrollbar-track {
+    border-radius: 10px;
+    background: $primaryBackground;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background-color: $primaryBackgroundBorder;
+    border-radius: 10px;
+    border: 3px solid $primaryBackground;
+  }
+
+  &::-webkit-scrollbar-thumb:hover {
+    background-color: #555;
   }
 }

@@ -1,5 +1,6 @@
 import "@/styles/globals.scss";
 import type { Metadata } from "next";
+import { Providers } from "@/contexts/providers";
 
 export const metadata: Metadata = {
   title: "Surface",
@@ -8,9 +9,11 @@ export const metadata: Metadata = {
 
 const RootLayout = ({ children }: Readonly<{ children: React.ReactNode }>) => {
   return (
-    <html lang="en">
-      <body>{children}</body>
-    </html>
+    <Providers>
+      <html lang="en">
+        <body>{children}</body>
+      </html>
+    </Providers>
   );
 };
 
