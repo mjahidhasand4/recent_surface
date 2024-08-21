@@ -5,34 +5,54 @@ const FileManager = () => {
     <Template>
       <main className="file-manager">
         <div className="overlap">
-          <div>
+          <div className="scrollbar">
             <div>
-              <h4>Quick Access</h4>
+              <h4>
+                <img src="/icons/quick-mode.png" alt="" />
+                <span>Quick Access</span>
+              </h4>
 
               <nav>
                 <button>
+                  <img src="/icons/user-folder.png" alt="" />
+                  <span>My Folder</span>
+                </button>
+                <button>
+                  <img src="/icons/favorite-folder.png" alt="" />
+                  <span>Favorite</span>
+                </button>
+                <button>
+                  <img src="/icons/documents.png" alt="" />
                   <span>Documents</span>
                 </button>
                 <button>
+                  <img src="/icons/gallery.png" alt="" />
                   <span>Pictures</span>
                 </button>
                 <button>
+                  <img src="/icons/music-heart.png" alt="" />
+                  <span>Music</span>
+                </button>
+                <button>
+                  <img src="/icons/video.png" alt="" />
                   <span>Videos</span>
                 </button>
               </nav>
             </div>
 
             <div>
-              <h4>File Manager</h4>
+              <h4>
+                <img src="/icons/file-explorer.png" alt="" />
+                <span>File Explorer</span>
+              </h4>
 
               <nav>
                 <button>
-                  <span>Documents</span>
-                </button>
-                <button>
+                  <img src="/icons/gallery.png" alt="" />
                   <span>Pictures</span>
                 </button>
                 <button>
+                  <img src="/icons/video.png" alt="" />
                   <span>Videos</span>
                 </button>
               </nav>
@@ -41,7 +61,7 @@ const FileManager = () => {
 
           <div>
             <img src="/icons/real-media-library.svg" alt="" />
-            <h2>File Manager</h2>
+            <h2>File Explorer</h2>
             <p>
               Quickly organize, search, and manage your files with a
               user-friendly interface.

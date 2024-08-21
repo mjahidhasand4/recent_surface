@@ -369,16 +369,53 @@ main.file-manager > div:first-child {
     padding: 8px;
     display: flex;
     flex-direction: column;
-    gap: 32px;
+    gap: 16px;
 
     h4 {
-      font: 500 13px "Segoe UI";
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      span {
+        font: 500 13px "Segoe UI";
+      }
+
+      svg,
+      img {
+        width: 16px;
+        height: 16px;
+      }
     }
 
     nav {
       display: flex;
       flex-direction: column;
       align-items: flex-start;
+    }
+
+    button {
+      width: 100%;
+      height: 28px;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 350ms ease;
+      transition-property: border, background;
+
+      img,
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      &:hover {
+        border-color: $primaryBackgroundBorder;
+        background: $primaryBackgroundHolder;
+      }
     }
 
     span {
@@ -420,6 +457,127 @@ main.file-manager > div:last-child {
 /* PAGE END */
 
 /** Components */
+
+/* File Explorer */
+div.file-explorer {
+  width: 90vw;
+  height: 90vh;
+  padding: 1px;
+  border-radius: 8px;
+  background: $body;
+  display: flex;
+  gap: 4px;
+  position: relative;
+
+  .overlap {
+    border-radius: inherit;
+  }
+}
+
+div.file-explorer > div {
+  height: 100%;
+  padding: 4px;
+}
+
+div.file-explorer > div:first-child {
+  width: 240px;
+  padding: 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+
+  > div:first-child {
+    flex: 1;
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    overflow: hidden scroll;
+
+    h4 {
+      margin: 0 0 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      span {
+        font: 500 13px "Segoe UI";
+      }
+
+      svg,
+      img {
+        width: 16px;
+        height: 16px;
+      }
+    }
+
+    nav {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    button {
+      width: 100%;
+      height: 28px;
+      padding: 0 16px;
+      border: 1px solid transparent;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 350ms ease;
+      transition-property: border, background;
+
+      img,
+      svg {
+        width: 16px;
+        height: 16px;
+      }
+
+      &:hover {
+        border-color: $primaryBackgroundBorder;
+        background: $primaryBackgroundHolder;
+      }
+    }
+
+    span {
+      font: 13px "Segoe UI";
+    }
+  }
+
+  > div:last-child {
+    padding: 8px;
+    border: 1px dashed #aaa;
+    border-radius: 0 0 4px 4px;
+    background: $body;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: relative;
+
+    img {
+      width: 64px;
+      height: 64px;
+      filter: grayscale(1);
+    }
+
+    span {
+      font: 500 14px "Segoe UI";
+    }
+
+    input {
+      position: absolute;
+      inset: -1px;
+      opacity: 0;
+      cursor: pointer;
+    }
+  }
+}
+
+div.file-explorer > div:last-child {
+  flex: 1;
+}
 
 /* Buttons START */
 .button.onlyIcon {
@@ -528,17 +686,6 @@ main.file-manager > div:last-child {
   animation: blink 350ms ease;
 }
 
-@keyframes blink {
-  0% {
-    opacity: 0;
-    transition: opacity 350ms ease;
-  }
-  100% {
-    opacity: 1;
-    transition: opacity 350ms ease;
-  }
-}
-
 .scrollbar {
   * {
     scrollbar-width: thin;
@@ -567,45 +714,39 @@ main.file-manager > div:last-child {
   }
 }
 
-.gradient-border {
-  --border-width: 1px;
+.gradient-border::after {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: -1px;
+  z-index: -1;
+  width: calc(100% + 2px);
+  height: calc(100% + 2px);
+  background: linear-gradient(
+    60deg,
+    hsl(224, 85%, 66%),
+    hsl(269, 85%, 66%),
+    hsl(314, 85%, 66%),
+    hsl(359, 85%, 66%),
+    hsl(44, 85%, 66%),
+    hsl(89, 85%, 66%),
+    hsl(134, 85%, 66%),
+    hsl(179, 85%, 66%)
+  );
+  background-size: 300% 300%;
+  background-position: 0 50%;
+  border-radius: inherit;
+  animation: moveGradient 4s alternate infinite;
+}
 
-  position: relative;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 300px;
-  height: 200px;
-  font-family: Lato, sans-serif;
-  font-size: 2.5rem;
-  text-transform: uppercase;
-  color: white;
-  background: #222;
-  border-radius: 10px;
-
-  &::after {
-    position: absolute;
-    content: "";
-    top: calc(-1 * var(--border-width));
-    left: calc(-1 * var(--border-width));
-    z-index: -1;
-    width: calc(100% + var(--border-width) * 2);
-    height: calc(100% + var(--border-width) * 2);
-    background: linear-gradient(
-      60deg,
-      hsl(224, 85%, 66%),
-      hsl(269, 85%, 66%),
-      hsl(314, 85%, 66%),
-      hsl(359, 85%, 66%),
-      hsl(44, 85%, 66%),
-      hsl(89, 85%, 66%),
-      hsl(134, 85%, 66%),
-      hsl(179, 85%, 66%)
-    );
-    background-size: 300% 300%;
-    background-position: 0 50%;
-    border-radius: 10px;
-    animation: moveGradient 4s alternate infinite;
+@keyframes blink {
+  0% {
+    opacity: 0;
+    transition: opacity 350ms ease;
+  }
+  100% {
+    opacity: 1;
+    transition: opacity 350ms ease;
   }
 }
 

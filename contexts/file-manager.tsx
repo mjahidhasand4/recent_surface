@@ -12,11 +12,11 @@ export const FileManagerContext = createContext({});
 export const FileManagerProvider: React.FC<Props> = (props) => {
   return (
     <FileManagerContext.Provider value={{}}>
-      {/* <Portal>
+      <Portal>
         <div className="overlay">
-          <FileManager className="overlap gradient-border" />
+          <FileManager className="gradient-border" />
         </div>
-      </Portal> */}
+      </Portal>
 
       {props.children}
     </FileManagerContext.Provider>
