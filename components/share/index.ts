@@ -6,3 +6,4 @@ export * from "./SideBar";
 export * from "./Template";
 export * from "./Portal";
 export * from "./Link";
+export * from "./UploadProgress";
