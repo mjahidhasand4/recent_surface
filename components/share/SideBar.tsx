@@ -67,7 +67,7 @@ export const SideBar = () => {
     >
       <div>
         <Link href="/">
-          <img src="/images/icons/xbox.svg" alt="" />
+          <img src="/icons/xbox.svg" alt="" />
         </Link>
 
         <Button
@@ -98,7 +98,8 @@ export const SideBar = () => {
         <Button onlyIcon icon={<BikeIcon />} onClick={() => open(Menu.RIDER)} />
         <CustomLink href="file-manager" onlyIcon icon={<FileManagerIcon />} />
 
-        <Button
+        <CustomLink
+          href="/mail"
           onlyIcon
           icon={<LetterBrokenIcon />}
           onClick={() => open(Menu.MAIL)}
@@ -108,12 +109,14 @@ export const SideBar = () => {
           icon={<UsersBrokenIcon />}
           onClick={() => open(Menu.USERS)}
         />
-        <Button
+        <CustomLink
+          href="/recycle-bin"
           onlyIcon
           icon={<TrashBinBrokenIcon />}
           onClick={() => open(Menu.TRASH)}
         />
-        <Button
+        <CustomLink
+          href="/settings"
           onlyIcon
           icon={<SettingsIcon />}
           onClick={() => open(Menu.SETTINGS)}
