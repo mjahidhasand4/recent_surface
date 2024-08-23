@@ -1,13 +1,10 @@
 "use client";
-import { DismissIcon } from "@/components/icons";
-import { Portal, UploadFile } from "@/components/share";
-import { useClickOutside } from "@/hooks/share";
+import { createContext, useState, ChangeEvent, ReactNode } from "react";
+import { Portal } from "@/components/share";
 import { GetOrphanFiles } from "@/lib/play";
-import { createFileProgressList, onFileUpload } from "@/utils/file";
-import { ChangeEvent, createContext, useEffect, useState } from "react";
 
 interface Props {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 interface FileProgress {
@@ -16,187 +13,220 @@ interface FileProgress {
   status: "pending" | "uploading" | "completed" | "failed";
 }
 
+interface OrphanFile {
+  id: string;
+  ext: string;
+  name: string;
+  src: string;
+  alt: string;
+  caption: string;
+  description: string;
+}
+
 interface State {
-  isOpen: boolean;
   data: {
     files: FileProgress[] | null;
+    orphanFiles: OrphanFile[];
   };
-  orphanFiles: {
-    id: string;
-    name: string;
-    ext: string;
-    src: string;
-    alt: string;
-    caption: string;
-    description: string;
-  }[];
 }
 
 const initialState: State = {
-  isOpen: true,
   data: {
     files: null,
+    orphanFiles: [],
   },
-  orphanFiles: [],
 };
 
-export const FileManagerContext = createContext<{ open: () => void }>({
-  open: () => {},
-});
+export const FileManagerContext = createContext<State>(initialState);
 
-export const FileManagerProvider: React.FC<Props> = ({ children }) => {
+export const FileManagerProvider: React.FC<Props> = (props) => {
   const [state, setState] = useState<State>(initialState);
 
-  useEffect(() => {
-    const getOrphanFiles = async () => {
-      try {
-        const orphanFiles = await GetOrphanFiles();
+  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const fileInput = event.target;
+    if (fileInput.files) {
+      const filesArray = Array.from(fileInput.files);
+      const filesWithProgress: FileProgress[] = filesArray.map((file) => ({
+        file,
+        progress: 0,
+        status: "pending",
+      }));
+      setState((prev) => ({
+        ...prev,
+        data: {
+          files: filesWithProgress,
+          orphanFiles: prev.data.orphanFiles,
+        },
+      }));
+      uploadFiles(filesWithProgress);
+    }
+  };
+
+  const uploadFiles = (filesWithProgress: FileProgress[]) => {
+    filesWithProgress.forEach((fileProgress) => {
+      const formData = new FormData();
+      formData.append("file", fileProgress.file);
+
+      const xhr = new XMLHttpRequest();
+      xhr.open("POST", "/api/file", true);
+
+      xhr.upload.onprogress = (event) => {
+        if (event.lengthComputable) {
+          const percentComplete = Math.round((event.loaded / event.total) * 100);
+          setState((prev) => ({
+            ...prev,
+            data: {
+              ...prev.data,
+              files:
+                prev.data.files?.map((fp) =>
+                  fp.file === fileProgress.file ? { ...fp, progress: percentComplete, status: "uploading" } : fp
+                ) ?? [],
+            },
+          }));
+        }
+      };
+
+      xhr.onload = async () => {
+        if (xhr.status === 200) {
+          setState((prev) => ({
+            ...prev,
+            data: {
+              ...prev.data,
+              files:
+                prev.data.files?.map((fp) =>
+                  fp.file === fileProgress.file
+                    ? { ...fp, status: "completed" }
+                    : fp
+                ) ?? [],
+            },
+          }));
+
+          const orphanFiles = await GetOrphanFiles();
+          console.log("🚀 ~ xhr.onload= ~ files:", orphanFiles);
+          setState((prev) => ({
+            ...prev,
+            data: {
+              ...prev.data,
+              orphanFiles,
+            },
+          }));
+        } else {
+          setState((prev) => ({
+            ...prev,
+            data: {
+              ...prev.data,
+              files:
+                prev.data.files?.map((fp) =>
+                  fp.file === fileProgress.file
+                    ? { ...fp, status: "failed" }
+                    : fp
+                ) ?? [],
+            },
+          }));
+        }
+      };
+
+      xhr.onerror = () => {
         setState((prev) => ({
           ...prev,
-          orphanFiles: orphanFiles.map((file) => ({
-            ...file,
-            ext: file.ext,
-            alt: file.alt ?? "",
-            caption: file.caption ?? "",
-            description: file.description ?? "",
-          })),
+          data: {
+            ...prev.data,
+            files:
+              prev.data.files?.map((fp) =>
+                fp.file === fileProgress.file ? { ...fp, status: "failed" } : fp
+              ) ?? [],
+          },
         }));
-      } catch (error) {
-        console.error("Error fetching orphan files:", error);
-      }
-    };
+      };
 
-    getOrphanFiles();
-  }, []);
-
-  const open = () => {
-    setState((prev) => ({
-      ...prev,
-      isOpen: true,
-    }));
-  };
-
-  const close = () => {
-    setState((prev) => ({
-      ...prev,
-      isOpen: false,
-    }));
-  };
-
-  const ref = useClickOutside(close);
-
-  const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
-    const files = event.target.files ? Array.from(event.target.files) : [];
-    const filesWithProgress = createFileProgressList(files);
-
-    setState((prev) => ({
-      ...prev,
-      data: { files: filesWithProgress },
-    }));
-
-    onFileUpload(filesWithProgress, updateFileProgress);
-  };
-
-  const updateFileProgress = (
-    targetFile: File,
-    update: Partial<FileProgress>
-  ) => {
-    setState((prev) => {
-      const updatedFiles = prev.data.files?.map((fileProgress) =>
-        fileProgress.file === targetFile
-          ? { ...fileProgress, ...update }
-          : fileProgress
-      );
-      return { ...prev, data: { files: updatedFiles ?? [] } };
+      xhr.send(formData);
     });
   };
 
   return (
-    <FileManagerContext.Provider value={{ open }}>
+    <FileManagerContext.Provider value={state}>
       <Portal>
-        {state.isOpen && (
-          <div className="overlay">
-            <div ref={ref} className="file-explorer gradient-border">
-              <div className="overlap">
-                <div className="scrollbar">
-                  <div>
-                    <h4>
-                      <img src="/icons/quick-mode.png" alt="" />
-                      <span>Quick Access</span>
-                    </h4>
-                    <nav>
-                      <button>
-                        <img src="/icons/user-folder.png" alt="" />
-                        <span>My Folder</span>
-                      </button>
-                      <button>
-                        <img src="/icons/favorite-folder.png" alt="" />
-                        <span>Favorite</span>
-                      </button>
-                      <button>
-                        <img src="/icons/documents.png" alt="" />
-                        <span>Documents</span>
-                      </button>
-                      <button>
-                        <img src="/icons/gallery.png" alt="" />
-                        <span>Pictures</span>
-                      </button>
-                      <button>
-                        <img src="/icons/music-heart.png" alt="" />
-                        <span>Music</span>
-                      </button>
-                      <button>
-                        <img src="/icons/video.png" alt="" />
-                        <span>Videos</span>
-                      </button>
-                    </nav>
-                  </div>
-
-                  <div>
-                    <h4>
-                      <img src="/icons/file-explorer.png" alt="" />
-                      <span>File Explorer</span>
-                    </h4>
-                    <nav>
-                      <button>
-                        <img src="/icons/gallery.png" alt="" />
-                        <span>Pictures</span>
-                      </button>
-                      <button>
-                        <img src="/icons/video.png" alt="" />
-                        <span>Videos</span>
-                      </button>
-                    </nav>
-                  </div>
+        <div className="overlay">
+          <div className="file-explorer gradient-border">
+            <div className="overlap">
+              <div className="scrollbar">
+                <div>
+                  <h4>
+                    <img src="/icons/quick-mode.png" alt="" />
+                    <span>Quick Access</span>
+                  </h4>
+                  <nav>
+                    <button>
+                      <img src="/icons/user-folder.png" alt="" />
+                      <span>My Folder</span>
+                    </button>
+                    <button>
+                      <img src="/icons/favorite-folder.png" alt="" />
+                      <span>Favorite</span>
+                    </button>
+                    <button>
+                      <img src="/icons/documents.png" alt="" />
+                      <span>Documents</span>
+                    </button>
+                    <button>
+                      <img src="/icons/gallery.png" alt="" />
+                      <span>Pictures</span>
+                    </button>
+                    <button>
+                      <img src="/icons/music-heart.png" alt="" />
+                      <span>Music</span>
+                    </button>
+                    <button>
+                      <img src="/icons/video.png" alt="" />
+                      <span>Videos</span>
+                    </button>
+                  </nav>
                 </div>
 
                 <div>
-                  <img src="/icons/pictures-folder.png" alt="" />
-                  <span>Insert files</span>
-                  <input type="file" multiple onChange={onFileChange} />
+                  <h4>
+                    <img src="/icons/file-explorer.png" alt="" />
+                    <span>File Explorer</span>
+                  </h4>
+                  <nav>
+                    <button>
+                      <img src="/icons/gallery.png" alt="" />
+                      <span>Pictures</span>
+                    </button>
+                    <button>
+                      <img src="/icons/video.png" alt="" />
+                      <span>Videos</span>
+                    </button>
+                  </nav>
                 </div>
               </div>
 
-              <div className="overlap">
-                <button onClick={close}>
-                  <DismissIcon />
-                </button>
+              <form>
+                <img src="/icons/pictures-folder.png" alt="" />
+                <span>Insert files</span>
+                <input type="file" multiple onChange={handleFileChange} />
+              </form>
+            </div>
 
-                <div>
-                  <h4>Orphan Files</h4>
-
-                  {state.orphanFiles.length > 0 &&
-                    state.orphanFiles.map((file) => (
-                      <UploadFile key={file.id} {...file} />
-                    ))}
-                </div>
-              </div>
+            <div className="overlap">
+              {state.data.orphanFiles &&
+                state.data.orphanFiles.map((file, index) => (
+                  <div style={{ margin: "0 0 16px" }} key={index}>
+                    <p>ID: {file.id}</p>
+                    <p>Extension: {file.ext}</p>
+                    <p>Name: {file.name}</p>
+                    <p>Src: {file.src}</p>
+                    <p>Alt: {file.alt}</p>
+                    <p>Caption: {file.caption}</p>
+                    <p>Description: {file.description}</p>
+                  </div>
+                ))}
             </div>
           </div>
-        )}
+        </div>
       </Portal>
 
-      {children}
+      {props.children}
     </FileManagerContext.Provider>
   );
 };

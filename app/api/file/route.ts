@@ -19,9 +19,12 @@ export const POST = async (req: Request) => {
 
     await prisma.file.create({
       data: {
+        ext: ext.slice(1),
         name: file.name,
         src: fileName,
-        ext,
+        alt: "",
+        caption: "",
+        description: "",
       },
     });
 

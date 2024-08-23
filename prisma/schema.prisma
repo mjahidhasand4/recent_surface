@@ -8,13 +8,13 @@ datasource db {
 }
 
 model File {
-  id          String  @id @default(cuid())
+  id          String @id @default(cuid())
   name        String
   ext         String
   src         String
-  alt         String?
-  caption     String?
-  description String?
+  alt         String
+  caption     String
+  description String
 
   createdAt DateTime  @default(now())
   updatedAt DateTime  @updatedAt
