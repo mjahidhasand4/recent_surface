@@ -1,6 +1,8 @@
+import path from "node:path";
+import fs from "node:fs/promises";
 import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
-import fs from "node:fs/promises";
+import { uuid, prisma } from "@/lib/share";
 
 export const POST = async (req: Request) => {
   try {
@@ -9,7 +11,19 @@ export const POST = async (req: Request) => {
     const file = formData.get("file") as File;
     const arrayBuffer = await file.arrayBuffer();
     const buffer = new Uint8Array(arrayBuffer);
-    await fs.writeFile(`./public/uploads/${file.name}`, buffer);
+
+    const ext = path.extname(file.name);
+    const newFilename = uuid();
+    const fileName = `./public/uploads/${newFilename}${ext}`;
+    await fs.writeFile(fileName, buffer);
+
+    await prisma.file.create({
+      data: {
+        name: file.name,
+        src: fileName,
+        ext,
+      },
+    });
 
     revalidatePath("/");
 
