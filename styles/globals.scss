@@ -460,8 +460,8 @@ main.file-manager > div:last-child {
 
 /* File Explorer */
 div.file-explorer {
-  width: 90vw;
-  height: 90vh;
+  width: 98vw;
+  height: 95vh;
   padding: 1px;
   border-radius: 8px;
   background: $body;
@@ -628,7 +628,70 @@ div.file-explorer > div:last-child {
   > div:last-child {
     flex: 1;
 
-    > div {
+    > div:first-child {
+      height: 100%;
+      padding: 12px;
+      overflow: hidden scroll;
+
+      // Wrapper div
+      > div {
+        > div:first-child {
+          margin: 0 0 8px;
+          display: flex;
+          align-items: center;
+          justify-content: space-between;
+
+          button {
+            padding: 4px 8px;
+            border-radius: 4px;
+            background: #ffffff10;
+            display: flex;
+            align-items: center;
+            gap: 4px;
+
+            img,
+            svg {
+              width: 12px;
+              height: 12px;
+              margin: 1px 0 0;
+            }
+          }
+        }
+
+        > div:last-child {
+          height: 128px;
+          display: grid;
+          grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
+          gap: 4px;
+          overflow: hidden;
+
+          button {
+            width: 128px;
+            height: 128px;
+            border: 1px solid $primaryBackgroundBorder;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+
+            &:hover img {
+              filter: contrast(115%);
+            }
+          }
+
+          img {
+            width: 128px;
+            height: 128px;
+            object-fit: cover;
+            transition: filter 250ms ease;
+          }
+        }
+      }
+
+      h4 {
+        font: 500 14px "Segoe UI";
+      }
     }
   }
 }
