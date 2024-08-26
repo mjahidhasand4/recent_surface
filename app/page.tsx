@@ -1,6 +1,6 @@
 import { Template } from "@/components/share";
 
-const Home = () => {
+const Home = async () => {
   return (
     <Template>
       <main className="homepage global">

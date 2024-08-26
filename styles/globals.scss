@@ -126,7 +126,7 @@ header.editor > div:last-child {
 /* Header End */
 
 /* SideBar START */
-.sidebar {
+aside.sidebar {
   min-width: 56px;
   height: calc(100vh - 8px);
   padding: 4px;
@@ -145,12 +145,12 @@ header.editor > div:last-child {
   }
 }
 
-.sidebar > div {
+aside.sidebar > div {
   position: relative;
   z-index: 1;
 }
 
-.sidebar > div:first-child {
+aside.sidebar > div:first-child {
   width: 48px;
   padding: 8px 4px 4px;
   display: flex;
@@ -175,7 +175,7 @@ header.editor > div:last-child {
   }
 }
 
-.sidebar > div:nth-child(2) {
+aside.sidebar > div:nth-child(2) {
   width: 210px;
   padding: 8px 4px 4px;
   overflow: hidden;
@@ -462,237 +462,66 @@ main.file-manager > div:last-child {
 div.file-explorer {
   width: 98vw;
   height: 95vh;
-  padding: 1px;
+  padding: 5px;
   border-radius: 8px;
   background: $body;
   display: flex;
   gap: 4px;
-  position: relative;
 
   .overlap {
     border-radius: inherit;
   }
 }
 
-div.file-explorer > div {
-  height: 100%;
-  padding: 4px;
+div.file-explorer .sidebar {
+  width: 240px;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+
+  nav {
+    width: 100%;
+
+    button {
+      width: 100%;
+      height: 28px;
+      border: 1px solid transparent;
+      border-radius: 2px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+
+      &:hover {
+        border-color: $primaryBackgroundHolder;
+        background: #242424;
+      }
+    }
+
+    button:first-child {
+      padding: 4px 8px;
+    }
+
+    button:not(:first-child) {
+      padding: 4px 4px 4px 36px;
+    }
+
+    img {
+      width: 20px;
+      height: 20px;
+    }
+  }
 }
 
-div.file-explorer > div:first-child {
-  width: 240px;
+div.file-explorer .explore {
+  flex: 1;
   padding: 4px;
   display: flex;
   flex-direction: column;
   gap: 8px;
 
-  > div:first-child {
-    flex: 1;
-    padding: 8px;
-    display: flex;
-    flex-direction: column;
-    gap: 16px;
-    overflow: hidden scroll;
-
-    h4 {
-      margin: 0 0 4px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-
-      span {
-        font: 500 13px "Segoe UI";
-      }
-
-      svg,
-      img {
-        width: 18px;
-        height: 18px;
-      }
-    }
-
-    nav {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-start;
-    }
-
-    button {
-      width: 100%;
-      height: 28px;
-      padding: 0 16px;
-      border: 1px solid transparent;
-      border-radius: 4px;
-      display: flex;
-      align-items: center;
-      gap: 4px;
-      transition: all 350ms ease;
-      transition-property: border, background;
-
-      img,
-      svg {
-        width: 16px;
-        height: 16px;
-      }
-
-      &:hover {
-        border-color: $primaryBackgroundBorder;
-        background: $primaryBackgroundHolder;
-      }
-    }
-
-    span {
-      font: 13px "Segoe UI";
-    }
-  }
-
-  > form {
-    padding: 8px;
-    border: 1px dashed #aaa;
-    border-radius: 0 0 4px 4px;
-    background: $body;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+  > * {
     position: relative;
-
-    img {
-      width: 64px;
-      height: 64px;
-      filter: grayscale(1);
-    }
-
-    span {
-      font: 500 14px "Segoe UI";
-    }
-
-    input {
-      position: absolute;
-      inset: -1px;
-      opacity: 0;
-      cursor: pointer;
-    }
-  }
-}
-
-div.file-explorer > div:last-child {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-
-  > div:first-child {
-    height: 40px;
-    padding: 8px 12px;
-    border-bottom: 1px solid #242424;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    div {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-    }
-
-    h3 {
-      font: 13px "Segoe UI";
-    }
-
-    img {
-      width: 24px;
-      height: 24px;
-      margin: -5px 0 0;
-    }
-
-    button {
-      padding: 4px;
-      border: 1px solid #ffffff20;
-      border-radius: 50%;
-      background: #ffffff10;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      svg {
-        width: 12px;
-        height: 12px;
-      }
-    }
-
-    h4 {
-      font: 500 14px "Segoe UI";
-      margin: 0 0 8px;
-    }
-  }
-
-  > div:last-child {
-    flex: 1;
-
-    > div:first-child {
-      height: 100%;
-      padding: 12px;
-      overflow: hidden scroll;
-
-      // Wrapper div
-      > div {
-        > div:first-child {
-          margin: 0 0 8px;
-          display: flex;
-          align-items: center;
-          justify-content: space-between;
-
-          button {
-            padding: 4px 8px;
-            border-radius: 4px;
-            background: #ffffff10;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-
-            img,
-            svg {
-              width: 12px;
-              height: 12px;
-              margin: 1px 0 0;
-            }
-          }
-        }
-
-        > div:last-child {
-          height: 128px;
-          display: grid;
-          grid-template-columns: repeat(auto-fill, minmax(128px, 1fr));
-          gap: 4px;
-          overflow: hidden;
-
-          button {
-            width: 128px;
-            height: 128px;
-            border: 1px solid $primaryBackgroundBorder;
-            border-radius: 4px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-
-            &:hover img {
-              filter: contrast(115%);
-            }
-          }
-
-          img {
-            width: 128px;
-            height: 128px;
-            object-fit: cover;
-            transition: filter 250ms ease;
-          }
-        }
-      }
-
-      h4 {
-        font: 500 14px "Segoe UI";
-      }
-    }
   }
 }
 
@@ -836,29 +665,33 @@ div.file-explorer > div:last-child {
   }
 }
 
-.gradient-border::after {
-  content: "";
-  position: absolute;
-  top: -1px;
-  left: -1px;
-  z-index: -1;
-  width: calc(100% + 2px);
-  height: calc(100% + 2px);
-  background: linear-gradient(
-    60deg,
-    hsl(224, 85%, 66%),
-    hsl(269, 85%, 66%),
-    hsl(314, 85%, 66%),
-    hsl(359, 85%, 66%),
-    hsl(44, 85%, 66%),
-    hsl(89, 85%, 66%),
-    hsl(134, 85%, 66%),
-    hsl(179, 85%, 66%)
-  );
-  background-size: 300% 300%;
-  background-position: 0 50%;
-  border-radius: inherit;
-  animation: moveGradient 4s alternate infinite;
+.gradient-border {
+  position: relative;
+
+  &::after {
+    content: "";
+    position: absolute;
+    top: -1px;
+    left: -1px;
+    z-index: -1;
+    width: calc(100% + 2px);
+    height: calc(100% + 2px);
+    background: linear-gradient(
+      60deg,
+      hsl(224, 85%, 66%),
+      hsl(269, 85%, 66%),
+      hsl(314, 85%, 66%),
+      hsl(359, 85%, 66%),
+      hsl(44, 85%, 66%),
+      hsl(89, 85%, 66%),
+      hsl(134, 85%, 66%),
+      hsl(179, 85%, 66%)
+    );
+    background-size: 300% 300%;
+    background-position: 0 50%;
+    border-radius: inherit;
+    animation: moveGradient 4s alternate infinite;
+  }
 }
 
 @keyframes blink {

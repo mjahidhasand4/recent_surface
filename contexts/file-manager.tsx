@@ -1,7 +1,8 @@
 "use client";
 import { ChangeEvent, createContext, ReactNode, useState } from "react";
-import { ArrowRightIcon, DismissIcon } from "@/components/icons";
 import { Portal } from "@/components/share";
+import { useQuery } from "@tanstack/react-query";
+import { GetFolderById, GetRootFolder } from "@/lib/play";
 
 interface Props {
   children: ReactNode;
@@ -18,6 +19,7 @@ interface State {
   data: {
     files: FileProgress[] | null;
   };
+  activeFolder: string | null;
 }
 
 const initialState: State = {
@@ -25,31 +27,42 @@ const initialState: State = {
   data: {
     files: null,
   },
+  activeFolder: null,
 };
 
-const demoImages = [
-  "https://images.unsplash.com/photo-1642447995041-436bb59b71f0?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1723845626792-2fe4a79c7239?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1660474128741-b9bc5f7b2370?q=80&w=1374&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1662913307002-ad2d32923913?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1565965018721-340ac71b14cc?q=80&w=1528&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1670003942359-3c64df385673?q=80&w=1530&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://images.unsplash.com/photo-1477088139840-0f0a9cb47cce?q=80&w=1480&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-  "https://plus.unsplash.com/premium_photo-1661953124438-3959644bbcb4?q=80&w=1470&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
-];
+const fetchFolder = async (folderId: string | null) => {
+  try {
+    if (folderId) {
+      const folder = await GetFolderById(folderId);
+      return folder ?? { subfolders: [], files: [] }; // Default empty object if folder not found
+    } else {
+      const rootFolder = await GetRootFolder();
+      return rootFolder ?? { subfolders: [], files: [] }; // Default empty object if root folder not found
+    }
+  } catch (error) {
+    console.error("Error fetching folder data:", error);
+    return { subfolders: [], files: [] }; // Default empty object on error
+  }
+};
 
-export const FileManagerContext = createContext<{
-  state: State;
-  open: () => void;
-  close: () => void;
-}>({
-  state: initialState,
+export const FileManagerContext = createContext<{ open: () => void }>({
   open: () => {},
-  close: () => {},
 });
 
 export const FileManagerProvider: React.FC<Props> = (props) => {
   const [state, setState] = useState<State>(initialState);
+
+  const { data: rootFolderData, isLoading: isRootFolderLoading } = useQuery({
+    queryKey: ["folder", null],
+    queryFn: () => fetchFolder(null),
+  });
+
+  const { data: subfolders, isLoading: isSubfoldersLoading } = useQuery({
+    queryKey: ["folder", state.activeFolder],
+    queryFn: () => fetchFolder(state.activeFolder),
+    enabled: !!state.activeFolder,
+  });
+  console.log("🚀 ~ subfolders:", subfolders);
 
   const open = () => {
     setState((prev) => ({ ...prev, isOpen: true }));
@@ -57,6 +70,10 @@ export const FileManagerProvider: React.FC<Props> = (props) => {
 
   const close = () => {
     setState((prev) => ({ ...prev, isOpen: false }));
+  };
+
+  const navigateToFolder = (folderId: string | null) => {
+    setState((prev) => ({ ...prev, activeFolder: folderId }));
   };
 
   const updateFileProgress = (
@@ -76,7 +93,7 @@ export const FileManagerProvider: React.FC<Props> = (props) => {
     }));
   };
 
-  const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
+  const onFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const fileInput = event.target;
     if (fileInput.files) {
       const filesArray = Array.from(fileInput.files);
@@ -129,63 +146,50 @@ export const FileManagerProvider: React.FC<Props> = (props) => {
   };
 
   return (
-    <FileManagerContext.Provider value={{ state, open, close }}>
+    <FileManagerContext.Provider value={{ open }}>
       <Portal>
         {state.isOpen && (
           <div className="overlay">
             <div className="file-explorer gradient-border">
-              <div className="overlap">
-                <div className="scrollbar">
-                  <div>
-                    <h4>
+              <div className="overlap sidebar">
+                <div>
+                  <nav>
+                    <button onClick={() => navigateToFolder(null)}>
                       <img src="/icons/real-media-library.svg" alt="" />
-                      <span>File Explorer</span>
-                    </h4>
-                    <nav></nav>
-                  </div>
+                      <span>{isRootFolderLoading ? "Loading..." : "Hi"}</span>
+                    </button>
+                    {rootFolderData?.subfolders.map((folder) => (
+                      <button
+                        key={folder.id}
+                        onClick={() => navigateToFolder(folder.id)}
+                      >
+                        <img src="/icons/real-media-library.svg" alt="" />
+                        <span>
+                          {isRootFolderLoading ? "Loading..." : folder.name}
+                        </span>
+                      </button>
+                    ))}
+                  </nav>
                 </div>
 
-                <form>
-                  <img src="/icons/pictures-folder.png" alt="" />
-                  <span>Insert files</span>
-                  <input type="file" multiple onChange={handleFileChange} />
-                </form>
+                <form></form>
               </div>
 
-              <div className="overlap">
-                <div>
-                  <div>
-                    <img src="/icons/real-media-library.svg" alt="" />
-                    <h3>File Explorer</h3>
-                  </div>
-                  <button onClick={close}>
-                    <DismissIcon />
-                  </button>
-                </div>
-
-                <div className="scrollbar">
-                  <div className="scrollbar">
-                    <div>
-                      <div>
-                        <h4>Anonymous</h4>
-                        <button>
-                          <span>More</span>
-                          <ArrowRightIcon />
-                        </button>
-                      </div>
-
-                      <div>
-                        {demoImages.map((src) => (
-                          <button key={src}>
-                            <img src={src} alt="" />
-                          </button>
-                        ))}
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>{/* More */}</div>
-                </div>
+              <div className="overlap explore">
+                {isSubfoldersLoading ? (
+                  <p>Loading subfolders...</p>
+                ) : (
+                  subfolders?.subfolders.map((folder) => (
+                    <button
+                      key={folder.id}
+                      onClick={() => navigateToFolder(folder.id)}
+                    >
+                      <span>
+                        {isRootFolderLoading ? "Loading..." : folder.name}
+                      </span>
+                    </button>
+                  ))
+                )}
               </div>
             </div>
           </div>
