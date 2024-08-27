@@ -2,8 +2,10 @@
 import { ChangeEvent, createContext, ReactNode, useState } from "react";
 import { Portal } from "@/components/share";
 import { useQuery } from "@tanstack/react-query";
-import { GetFolderById, GetRootFolder } from "@/lib/play";
+import { GetFolderById, GetPinnedFolder, GetRootFolder } from "@/lib/play";
+import { ArrowRightIcon, DismissIcon } from "@/components/icons";
 
+// Interfaces
 interface Props {
   children: ReactNode;
 }
@@ -23,57 +25,97 @@ interface State {
 }
 
 const initialState: State = {
-  isOpen: true,
+  isOpen: false,
   data: {
     files: null,
   },
   activeFolder: null,
 };
 
-const fetchFolder = async (folderId: string | null) => {
+// Queue for managing folder navigation
+const folderQueue: (string | null)[] = [];
+
+// Fetch Functions
+const fetchRootFolder = async () => {
   try {
-    if (folderId) {
-      const folder = await GetFolderById(folderId);
-      return folder ?? { subfolders: [], files: [] }; // Default empty object if folder not found
-    } else {
-      const rootFolder = await GetRootFolder();
-      return rootFolder ?? { subfolders: [], files: [] }; // Default empty object if root folder not found
-    }
+    const rootFolder = await GetRootFolder();
+    return rootFolder ?? { subfolders: [], files: [] };
   } catch (error) {
-    console.error("Error fetching folder data:", error);
-    return { subfolders: [], files: [] }; // Default empty object on error
+    console.error("Error fetching root folder data:", error);
+    return { subfolders: [], files: [] };
   }
 };
 
+const fetchFolderById = async (folderId: string) => {
+  try {
+    const folder = await GetFolderById(folderId);
+    return folder ?? { subfolders: [], files: [] };
+  } catch (error) {
+    console.error("Error fetching folder data:", error);
+    return { subfolders: [], files: [] };
+  }
+};
+
+const fetchPinnedFolder = async () => {
+  try {
+    const pinnedFolders = await GetPinnedFolder();
+    return pinnedFolders;
+  } catch (error) {
+    console.error("Error fetching pinned folders:", error);
+    return null;
+  }
+};
+
+// Context
 export const FileManagerContext = createContext<{ open: () => void }>({
   open: () => {},
 });
 
-export const FileManagerProvider: React.FC<Props> = (props) => {
+// Provider Component
+export const FileManagerProvider: React.FC<Props> = ({ children }) => {
   const [state, setState] = useState<State>(initialState);
 
+  // Queries
   const { data: rootFolderData, isLoading: isRootFolderLoading } = useQuery({
-    queryKey: ["folder", null],
-    queryFn: () => fetchFolder(null),
+    queryKey: ["folder", "root"],
+    queryFn: fetchRootFolder,
   });
 
-  const { data: subfolders, isLoading: isSubfoldersLoading } = useQuery({
+  const { data: subfoldersData, isLoading: isSubfoldersLoading } = useQuery({
     queryKey: ["folder", state.activeFolder],
-    queryFn: () => fetchFolder(state.activeFolder),
+    queryFn: () => fetchFolderById(state.activeFolder!),
     enabled: !!state.activeFolder,
   });
-  console.log("🚀 ~ subfolders:", subfolders);
 
-  const open = () => {
-    setState((prev) => ({ ...prev, isOpen: true }));
-  };
+  const { data: pinnedFolders, isLoading: isPinnedFolderLoading } = useQuery({
+    queryKey: ["pinned-folder"],
+    queryFn: fetchPinnedFolder,
+  });
 
-  const close = () => {
-    setState((prev) => ({ ...prev, isOpen: false }));
+  // Actions
+  const open = () => setState((prev) => ({ ...prev, isOpen: true }));
+  const close = () => setState((prev) => ({ ...prev, isOpen: false }));
+
+  const resetStateButOpen = () => {
+    setState({
+      ...initialState,
+      isOpen: true, // Keep the file explorer open
+    });
   };
 
   const navigateToFolder = (folderId: string | null) => {
+    if (state.activeFolder !== null) {
+      // Enqueue the current folder before navigating to the new one
+      folderQueue.push(state.activeFolder);
+    }
     setState((prev) => ({ ...prev, activeFolder: folderId }));
+  };
+
+  const navigateBack = () => {
+    if (folderQueue.length > 0) {
+      const previousFolder = folderQueue.pop() || null;
+      setState((prev) => ({ ...prev, activeFolder: previousFolder }));
+    }
   };
 
   const updateFileProgress = (
@@ -154,21 +196,43 @@ export const FileManagerProvider: React.FC<Props> = (props) => {
               <div className="overlap sidebar">
                 <div>
                   <nav>
+                    <button onClick={resetStateButOpen}>
+                      <span>Quick Access</span>
+                    </button>
+                    {isPinnedFolderLoading
+                      ? "Loading..."
+                      : pinnedFolders?.map((folder) => (
+                          <button
+                            key={folder.id}
+                            onClick={() => navigateToFolder(folder.id)}
+                          >
+                            {folder.name}
+                          </button>
+                        ))}
+                  </nav>
+
+                  <nav>
                     <button onClick={() => navigateToFolder(null)}>
                       <img src="/icons/real-media-library.svg" alt="" />
-                      <span>{isRootFolderLoading ? "Loading..." : "Hi"}</span>
+                      <span>
+                        {isRootFolderLoading
+                          ? "Loading..."
+                          : rootFolderData && "name" in rootFolderData
+                          ? rootFolderData.name
+                          : "File Explorer"}
+                      </span>
                     </button>
-                    {rootFolderData?.subfolders.map((folder) => (
-                      <button
-                        key={folder.id}
-                        onClick={() => navigateToFolder(folder.id)}
-                      >
-                        <img src="/icons/real-media-library.svg" alt="" />
-                        <span>
-                          {isRootFolderLoading ? "Loading..." : folder.name}
-                        </span>
-                      </button>
-                    ))}
+                    {rootFolderData &&
+                      "subfolders" in rootFolderData &&
+                      rootFolderData.subfolders.map((folder) => (
+                        <button
+                          key={folder.id}
+                          onClick={() => navigateToFolder(folder.id)}
+                        >
+                          <img src="/icons/real-media-library.svg" alt="" />
+                          <span>{folder.name}</span>
+                        </button>
+                      ))}
                   </nav>
                 </div>
 
@@ -176,17 +240,35 @@ export const FileManagerProvider: React.FC<Props> = (props) => {
               </div>
 
               <div className="overlap explore">
+                <div>
+                  <button onClick={navigateBack}>
+                    <ArrowRightIcon />
+                  </button>
+                  <button onClick={close}>
+                    <DismissIcon />
+                  </button>
+                </div>
+                
                 {isSubfoldersLoading ? (
                   <p>Loading subfolders...</p>
-                ) : (
-                  subfolders?.subfolders.map((folder) => (
+                ) : state.activeFolder ? (
+                  subfoldersData?.subfolders.map((folder) => (
                     <button
                       key={folder.id}
                       onClick={() => navigateToFolder(folder.id)}
                     >
-                      <span>
-                        {isRootFolderLoading ? "Loading..." : folder.name}
-                      </span>
+                      <span>{folder.name}</span>
+                    </button>
+                  ))
+                ) : isPinnedFolderLoading ? (
+                  "Loading..."
+                ) : (
+                  pinnedFolders?.map((folder) => (
+                    <button
+                      key={folder.id}
+                      onClick={() => navigateToFolder(folder.id)}
+                    >
+                      {folder.name}
                     </button>
                   ))
                 )}
@@ -196,7 +278,7 @@ export const FileManagerProvider: React.FC<Props> = (props) => {
         )}
       </Portal>
 
-      {props.children}
+      {children}
     </FileManagerContext.Provider>
   );
 };

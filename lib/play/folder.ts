@@ -61,3 +61,18 @@ export const GetFolderById = async (folderId: string) => {
     },
   });
 };
+
+export const GetPinnedFolder = async () => {
+  try {
+    const pinnedFolders = await prisma.folder.findMany({
+      where: {
+        isPinned: true,
+      },
+    });
+    
+    return pinnedFolders;
+  } catch (error) {
+    console.log("🚀 ~ GetPinnedFolder ~ error:", error);
+    return [];
+  }
+};

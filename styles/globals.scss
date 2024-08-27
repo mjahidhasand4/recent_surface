@@ -523,6 +523,34 @@ div.file-explorer .explore {
   > * {
     position: relative;
   }
+
+  > div:first-child {
+    height: 40px;
+    padding: 0 4px;
+    border-bottom: 1px solid $primaryBackgroundHolder;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    button {
+      padding: 4px;
+      border: 1px solid #3f3f3f;
+      border-radius: 50%;
+      background: #ffffff10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    button:first-child svg {
+      rotate: 180deg;
+    }
+    
+    svg {
+      width: 12px;
+      height: 12px;
+    }
+  }
 }
 
 /* Buttons START */
