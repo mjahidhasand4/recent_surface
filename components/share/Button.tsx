@@ -12,7 +12,7 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button: React.FC<Props> = (props) => {
-  const { onlyIcon, icon, text, button, children, color, ...rest } = props;
+  const { onlyIcon, icon, text, button, children, color="primary", ...rest } = props;
 
   if ((icon || text) && children) {
     throw new Error(

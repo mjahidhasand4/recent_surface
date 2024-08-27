@@ -467,10 +467,6 @@ div.file-explorer {
   background: $body;
   display: flex;
   gap: 4px;
-
-  .overlap {
-    border-radius: inherit;
-  }
 }
 
 div.file-explorer .sidebar {
@@ -480,8 +476,27 @@ div.file-explorer .sidebar {
   flex-direction: column;
   gap: 24px;
 
+  > div {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+
   nav {
     width: 100%;
+
+    > span:first-of-type {
+      font: 500 14px "Segoe UI";
+      padding: 4px 4px 0 12px;
+      display: block;
+    }
+
+    > span:last-of-type {
+      font: 13px "Segoe UI";
+      color: #7a7a7a;
+      padding: 0 4px 0 12px;
+      display: block;
+    }
 
     button {
       width: 100%;
@@ -532,7 +547,20 @@ div.file-explorer .explore {
     align-items: center;
     justify-content: space-between;
 
+    div {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+
+      button:last-child svg {
+        width: 20px;
+        height: 20px;
+      }
+    }
+
     button {
+      width: 26px;
+      height: 26px;
       padding: 4px;
       border: 1px solid #3f3f3f;
       border-radius: 50%;
@@ -545,10 +573,69 @@ div.file-explorer .explore {
     button:first-child svg {
       rotate: 180deg;
     }
-    
+
     svg {
       width: 12px;
       height: 12px;
+    }
+  }
+}
+
+/* Form */
+form.folder {
+  width: 320px;
+  padding: 8px;
+  border: 1px solid $body;
+  border-radius: 4px;
+  background: $primaryBackground;
+
+  h1 {
+    font: 500 14px "Segoe UI";
+    margin: 0 0 8px;
+  }
+
+  button {
+    width: 100%;
+  }
+
+  > :not(button) {
+    margin: 0 0 14px;
+  }
+
+  .container.switch {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    label {
+      font: 500 12px "Segoe UI";
+    }
+
+    .switch {
+      width: 40px;
+      padding: 2px;
+      border-radius: 20px;
+      box-shadow: inset 0 0.0625em 0.125em rgba(0, 0, 0, 0.2);
+      background: #aeaeae;
+      display: flex;
+      align-items: center;
+      transition: background-color 0.4s linear;
+
+      i {
+        position: relative;
+        border-radius: 0.6875em;
+        transform-origin: left;
+        width: 1em;
+        height: 1em;
+        background-color: #fff;
+        box-shadow: 0 0.25em 0.25em rgba(0, 0, 0, 0.2),
+          inset 0 -0.125em 0.25em rgba(0, 0, 0, 0.2);
+        transition: margin 350ms ease;
+      }
+
+      &:hover i {
+        margin: 0 0 0 auto;
+      }
     }
   }
 }
@@ -560,6 +647,14 @@ div.file-explorer .explore {
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+.button.primary {
+  color: rgba(black, 0.64);
+  height: 31px;
+  padding: 0 8px;
+  border-radius: 4px;
+  background: #fce100;
 }
 /* Buttons END */
 

@@ -1,9 +1,9 @@
 "use client";
 import { ChangeEvent, createContext, ReactNode, useState } from "react";
-import { Portal } from "@/components/share";
+import { CreateFolder, Portal } from "@/components/share";
 import { useQuery } from "@tanstack/react-query";
 import { GetFolderById, GetPinnedFolder, GetRootFolder } from "@/lib/play";
-import { ArrowRightIcon, DismissIcon } from "@/components/icons";
+import { ArrowRightIcon, DismissIcon, FolderAddIcon } from "@/components/icons";
 
 // Interfaces
 interface Props {
@@ -25,7 +25,7 @@ interface State {
 }
 
 const initialState: State = {
-  isOpen: false,
+  isOpen: true,
   data: {
     files: null,
   },
@@ -81,6 +81,8 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
     queryFn: fetchRootFolder,
   });
 
+  // console.log(rootFolderData);
+
   const { data: subfoldersData, isLoading: isSubfoldersLoading } = useQuery({
     queryKey: ["folder", state.activeFolder],
     queryFn: () => fetchFolderById(state.activeFolder!),
@@ -96,7 +98,7 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
   const open = () => setState((prev) => ({ ...prev, isOpen: true }));
   const close = () => setState((prev) => ({ ...prev, isOpen: false }));
 
-  const resetStateButOpen = () => {
+  const resetState = () => {
     setState({
       ...initialState,
       isOpen: true, // Keep the file explorer open
@@ -195,20 +197,22 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
             <div className="file-explorer gradient-border">
               <div className="overlap sidebar">
                 <div>
-                  <nav>
-                    <button onClick={resetStateButOpen}>
+                  <nav onClick={resetState}>
+                    <button>
+                      <img src="/icons/quick-mode.png" alt="" />
                       <span>Quick Access</span>
                     </button>
-                    {isPinnedFolderLoading
-                      ? "Loading..."
-                      : pinnedFolders?.map((folder) => (
-                          <button
-                            key={folder.id}
-                            onClick={() => navigateToFolder(folder.id)}
-                          >
-                            {folder.name}
-                          </button>
-                        ))}
+
+                    {pinnedFolders?.length === 0 ? (
+                      <>
+                        <span>Pin</span>
+                        <span>
+                          Don’t waste time searching—pin your top folders
+                        </span>
+                      </>
+                    ) : (
+                      <></>
+                    )}
                   </nav>
 
                   <nav>
@@ -241,14 +245,19 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
 
               <div className="overlap explore">
                 <div>
-                  <button onClick={navigateBack}>
-                    <ArrowRightIcon />
-                  </button>
+                  <div>
+                    <button onClick={navigateBack}>
+                      <ArrowRightIcon />
+                    </button>
+                    <button>
+                      <FolderAddIcon />
+                    </button>
+                  </div>
                   <button onClick={close}>
                     <DismissIcon />
                   </button>
                 </div>
-                
+
                 {isSubfoldersLoading ? (
                   <p>Loading subfolders...</p>
                 ) : state.activeFolder ? (
@@ -277,6 +286,8 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
           </div>
         )}
       </Portal>
+
+      <CreateFolder />
 
       {children}
     </FileManagerContext.Provider>
