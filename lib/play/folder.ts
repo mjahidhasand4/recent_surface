@@ -1,12 +1,9 @@
 "use server";
 import { prisma } from "@/lib/share";
 
-interface CreateFolder {
-  (name: string, parentId: string | null, userId: string): Promise<boolean>;
-}
-
-export const CreateFolder: CreateFolder = async (name, parentId, userId) => {
+export const CreateFolder = async (_: any, formData: FormData) => {
   try {
+    const userId = "";
     const userExists = await prisma.user.findUnique({
       where: { id: userId },
     });
@@ -69,7 +66,7 @@ export const GetPinnedFolder = async () => {
         isPinned: true,
       },
     });
-    
+
     return pinnedFolders;
   } catch (error) {
     console.log("🚀 ~ GetPinnedFolder ~ error:", error);

@@ -1,20 +1,32 @@
-import { Button, Input, Portal, Switch } from ".";
+"use client";
+import { DismissIcon } from "@/components/icons";
+import { Button, Checkbox, Input, Portal } from ".";
+import { useClickOutside } from "@/hooks/share";
+import {CreateFolder as CreateDirectory} from "@/lib/play"
 
-export const CreateFolder = () => {
+interface Props {
+  closeBox: () => void;
+}
+
+export const CreateFolder: React.FC<Props> = (props) => {
+  const { closeBox } = props;
+  const ref = useClickOutside(closeBox);
+
   return (
     <Portal>
       <div className="overlay">
-        <form className="folder">
-          <h1>New Folder</h1>
-          <Input name="name" title="Name" />
-          <div className="container switch">
-            <label htmlFor="status">Private</label>
-            <Switch />
+        <form action={async () => {
+          await CreateDirectory("")
+        }} ref={ref} className="folder">
+          <div>
+            <h1>New Folder</h1>
+            <button onClick={closeBox}>
+              <DismissIcon />
+            </button>
           </div>
-          <div className="container switch">
-            <label htmlFor="status">Shareable</label>
-            <Switch />
-          </div>
+          <p>Make a new folder for file organization.</p>
+          <Input name="name" title="Name" autoComplete="off" />
+          <Checkbox name="private" title="Private" />
           <Button text="Continue" />
         </form>
       </div>

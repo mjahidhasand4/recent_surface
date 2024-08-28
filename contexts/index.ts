@@ -1,2 +1,2 @@
-export * from "./file-manager";
+export * from "./file-explorer";
 export * from "./providers";

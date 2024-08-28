@@ -589,54 +589,46 @@ form.folder {
   border-radius: 4px;
   background: $primaryBackground;
 
-  h1 {
-    font: 500 14px "Segoe UI";
-    margin: 0 0 8px;
-  }
-
-  button {
-    width: 100%;
-  }
-
-  > :not(button) {
-    margin: 0 0 14px;
-  }
-
-  .container.switch {
+  > div:first-child {
+    margin: 0;
     display: flex;
     align-items: center;
     justify-content: space-between;
 
-    label {
-      font: 500 12px "Segoe UI";
-    }
-
-    .switch {
-      width: 40px;
-      padding: 2px;
-      border-radius: 20px;
-      box-shadow: inset 0 0.0625em 0.125em rgba(0, 0, 0, 0.2);
-      background: #aeaeae;
+    button {
+      width: 20px;
+      height: 20px;
+      border: 1px solid #3f3f3f;
+      border-radius: 50%;
+      background: #ffffff10;
       display: flex;
       align-items: center;
-      transition: background-color 0.4s linear;
+      justify-content: center;
 
-      i {
-        position: relative;
-        border-radius: 0.6875em;
-        transform-origin: left;
-        width: 1em;
-        height: 1em;
-        background-color: #fff;
-        box-shadow: 0 0.25em 0.25em rgba(0, 0, 0, 0.2),
-          inset 0 -0.125em 0.25em rgba(0, 0, 0, 0.2);
-        transition: margin 350ms ease;
-      }
-
-      &:hover i {
-        margin: 0 0 0 auto;
+      svg {
+        width: 12px;
+        height: 12px;
       }
     }
+  }
+
+  h1 {
+    font: 500 14px "Segoe UI";
+  }
+
+  p {
+    font: 12px "Segoe UI";
+    color: #7a7a7a;
+    margin: 0 0 8px;
+  }
+
+  > button {
+    width: 100%;
+  }
+
+  .input,
+  .checkbox {
+    margin: 0 0 14px;
   }
 }
 
@@ -650,11 +642,11 @@ form.folder {
 }
 
 .button.primary {
-  color: rgba(black, 0.64);
+  color: white;
   height: 31px;
   padding: 0 8px;
   border-radius: 4px;
-  background: #fce100;
+  background: #1f6feb;
 }
 /* Buttons END */
 
@@ -685,6 +677,53 @@ form.folder {
   }
 }
 /* Input END */
+
+/* Checkbox Start */
+.checkbox {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  label {
+    font: 500 12px "Segoe UI";
+  }
+
+  div {
+    width: 20px;
+    height: 20px;
+    border: 1px solid #30363d;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    input {
+      opacity: 0;
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    svg {
+      width: 16px;
+      height: 12px;
+      opacity: 0;
+      transition: all 250ms linear 0.2s;
+      transition-property: opacity, stroke-dashoffset;
+    }
+
+    &:hover {
+      background: #0a0a0a;
+    }
+
+    input:checked + svg {
+      opacity: 1;
+    }
+  }
+}
+
+/* Checkbox End */
 
 /* UI START */
 .masonry {

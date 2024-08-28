@@ -1,3 +1,6 @@
+-- CreateEnum
+CREATE TYPE "FOLDER" AS ENUM ('PRIVATE', 'PUBLIC');
+
 -- CreateTable
 CREATE TABLE "users" (
     "id" TEXT NOT NULL,
@@ -7,6 +10,7 @@ CREATE TABLE "users" (
     "password" TEXT NOT NULL,
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
+    "sharedId" TEXT,
 
     CONSTRAINT "users_pkey" PRIMARY KEY ("id")
 );
@@ -15,13 +19,25 @@ CREATE TABLE "users" (
 CREATE TABLE "folders" (
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
+    "description" TEXT,
     "parent_id" TEXT,
     "is_pinned" BOOLEAN NOT NULL DEFAULT false,
+    "iconId" TEXT NOT NULL,
     "created_by" TEXT NOT NULL,
+    "sharable" BOOLEAN NOT NULL DEFAULT false,
+    "status" "FOLDER" NOT NULL DEFAULT 'PUBLIC',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "folders_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "shared" (
+    "id" TEXT NOT NULL,
+    "folderId" TEXT NOT NULL,
+
+    CONSTRAINT "shared_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -37,14 +53,38 @@ CREATE TABLE "files" (
     CONSTRAINT "files_pkey" PRIMARY KEY ("id")
 );
 
+-- CreateTable
+CREATE TABLE "icons" (
+    "id" TEXT NOT NULL,
+    "src" TEXT NOT NULL,
+    "alt" TEXT,
+    "created_by" TEXT NOT NULL,
+    "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updated_at" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "icons_pkey" PRIMARY KEY ("id")
+);
+
+-- AddForeignKey
+ALTER TABLE "users" ADD CONSTRAINT "users_sharedId_fkey" FOREIGN KEY ("sharedId") REFERENCES "shared"("id") ON DELETE SET NULL ON UPDATE CASCADE;
+
 -- AddForeignKey
 ALTER TABLE "folders" ADD CONSTRAINT "folders_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "folders"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
+ALTER TABLE "folders" ADD CONSTRAINT "folders_iconId_fkey" FOREIGN KEY ("iconId") REFERENCES "icons"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
 ALTER TABLE "folders" ADD CONSTRAINT "folders_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "shared" ADD CONSTRAINT "shared_folderId_fkey" FOREIGN KEY ("folderId") REFERENCES "folders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "files" ADD CONSTRAINT "files_folder_id_fkey" FOREIGN KEY ("folder_id") REFERENCES "folders"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "files" ADD CONSTRAINT "files_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+
+-- AddForeignKey
+ALTER TABLE "icons" ADD CONSTRAINT "icons_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

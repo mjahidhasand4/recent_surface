@@ -1,13 +1,16 @@
 "use client";
-import { ChangeEvent, createContext, ReactNode, useState } from "react";
-import { CreateFolder, Portal } from "@/components/share";
-import { useQuery } from "@tanstack/react-query";
-import { GetFolderById, GetPinnedFolder, GetRootFolder } from "@/lib/play";
 import { ArrowRightIcon, DismissIcon, FolderAddIcon } from "@/components/icons";
+import { CreateFolder, Portal } from "@/components/share";
+import { GetFolderById, GetPinnedFolder, GetRootFolder } from "@/lib/play";
+import { useQuery } from "@tanstack/react-query";
+import { ChangeEvent, createContext, ReactNode, useState } from "react";
 
-// Interfaces
 interface Props {
   children: ReactNode;
+}
+
+interface OpenBox {
+  createFolder: boolean;
 }
 
 interface FileProgress {
@@ -22,6 +25,7 @@ interface State {
     files: FileProgress[] | null;
   };
   activeFolder: string | null;
+  openBox: OpenBox;
 }
 
 const initialState: State = {
@@ -30,6 +34,9 @@ const initialState: State = {
     files: null,
   },
   activeFolder: null,
+  openBox: {
+    createFolder: false,
+  },
 };
 
 // Queue for managing folder navigation
@@ -95,8 +102,23 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
   });
 
   // Actions
-  const open = () => setState((prev) => ({ ...prev, isOpen: true }));
+  const openFileExplorer = () =>
+    setState((prev) => ({ ...prev, isOpen: true }));
   const close = () => setState((prev) => ({ ...prev, isOpen: false }));
+
+  const openBox = (box: keyof OpenBox) => {
+    setState((prev) => ({
+      ...prev,
+      openBox: { ...prev.openBox, [box]: true },
+    }));
+  };
+
+  const closeBox = (box: keyof OpenBox) => {
+    setState((prev) => ({
+      ...prev,
+      openBox: { ...prev.openBox, [box]: false },
+    }));
+  };
 
   const resetState = () => {
     setState({
@@ -190,7 +212,7 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
   };
 
   return (
-    <FileManagerContext.Provider value={{ open }}>
+    <FileManagerContext.Provider value={{ open: openFileExplorer }}>
       <Portal>
         {state.isOpen && (
           <div className="overlay">
@@ -249,7 +271,7 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
                     <button onClick={navigateBack}>
                       <ArrowRightIcon />
                     </button>
-                    <button>
+                    <button onClick={() => openBox("createFolder")}>
                       <FolderAddIcon />
                     </button>
                   </div>
@@ -287,7 +309,7 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
         )}
       </Portal>
 
-      <CreateFolder />
+      {state.openBox.createFolder && <CreateFolder closeBox={() => closeBox("createFolder")} />}
 
       {children}
     </FileManagerContext.Provider>
