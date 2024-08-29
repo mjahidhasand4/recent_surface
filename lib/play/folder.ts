@@ -1,22 +1,21 @@
 "use server";
 import { prisma } from "@/lib/share";
 
-export const CreateFolder = async (_: any, formData: FormData) => {
+export const CreateFolder = async (formData: FormData) => {
+  console.log(Object.fromEntries(formData));
+  const folder = {
+    name: formData.get("name")?.toString() || "",
+    private: formData.get("private")?.toString() === "on",
+    parentId: formData.get("parentId")?.toString() || null,
+    userId: "cm0f0x1ie00006ueep82gxata",
+  };
+
   try {
-    const userId = "";
-    const userExists = await prisma.user.findUnique({
-      where: { id: userId },
-    });
-
-    if (!userExists) {
-      throw new Error("User not found");
-    }
-
     const newFolder = await prisma.folder.create({
       data: {
-        name,
-        parentId: parentId || undefined,
-        userId,
+        name: folder.name,
+        parentId: folder.parentId,
+        userId: folder.userId,
       },
     });
 
@@ -71,5 +70,20 @@ export const GetPinnedFolder = async () => {
   } catch (error) {
     console.log("🚀 ~ GetPinnedFolder ~ error:", error);
     return [];
+  }
+};
+
+export const DeleteFolderById = async (folderId: string) => {
+  try {
+    const deletedFolder = await prisma.folder.delete({
+      where: {
+        id: folderId,
+      },
+    });
+
+    return deletedFolder;
+  } catch (error) {
+    console.log("🚀 ~ DeleteFolderById ~ error:", error);
+    throw new Error("Failed to delete the folder.");
   }
 };

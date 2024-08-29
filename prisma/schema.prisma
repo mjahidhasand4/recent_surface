@@ -27,27 +27,26 @@ model User {
 }
 
 model Folder {
-  id          String   @id @default(cuid())
+  id          String  @id @default(cuid())
   name        String
   description String?
-  parentId    String?  @map("parent_id")
-  parent      Folder?  @relation("FolderToSubfolders", fields: [parentId], references: [id])
-  subfolders  Folder[] @relation("FolderToSubfolders")
-  files       File[]
-  isPinned    Boolean  @default(false) @map("is_pinned")
 
-  iconId    String
-  icon      Icon   @relation(fields: [iconId], references: [id])
-  userId    String @map("created_by")
-  createdBy User   @relation(fields: [userId], references: [id])
+  parentId   String?  @map("parent_id")
+  parent     Folder?  @relation("FolderToSubfolders", fields: [parentId], references: [id])
+  subfolders Folder[] @relation("FolderToSubfolders")
+  files      File[]
+  isPinned   Boolean? @default(false) @map("is_pinned")
 
-  sharable Boolean @default(false)
-  status   FOLDER  @default(PUBLIC)
+  iconId String?
+  icon   Icon?   @relation(fields: [iconId], references: [id])
 
+  status FOLDER?  @default(PUBLIC)
+  Shared Shared[]
+
+  userId    String   @map("created_by")
+  user      User     @relation(fields: [userId], references: [id])
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
-
-  Shared Shared[]
 
   @@map("folders")
 }

@@ -12,7 +12,15 @@ interface Props extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button: React.FC<Props> = (props) => {
-  const { onlyIcon, icon, text, button, children, color="primary", ...rest } = props;
+  const {
+    onlyIcon,
+    icon,
+    text,
+    button,
+    children,
+    color = "primary",
+    ...rest
+  } = props;
 
   if ((icon || text) && children) {
     throw new Error(
@@ -36,9 +44,13 @@ export const Button: React.FC<Props> = (props) => {
     return (
       <button className={`button ${color}`} {...rest}>
         {status.pending && <span>Loading...</span>}
-        {icon}
-        {text}
-        {children}
+        {!status.pending && (
+          <>
+            {icon}
+            {text}
+            {children}
+          </>
+        )}
       </button>
     );
   }

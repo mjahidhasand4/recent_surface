@@ -21,11 +21,10 @@ CREATE TABLE "folders" (
     "name" TEXT NOT NULL,
     "description" TEXT,
     "parent_id" TEXT,
-    "is_pinned" BOOLEAN NOT NULL DEFAULT false,
-    "iconId" TEXT NOT NULL,
+    "is_pinned" BOOLEAN DEFAULT false,
+    "iconId" TEXT,
+    "status" "FOLDER" DEFAULT 'PUBLIC',
     "created_by" TEXT NOT NULL,
-    "sharable" BOOLEAN NOT NULL DEFAULT false,
-    "status" "FOLDER" NOT NULL DEFAULT 'PUBLIC',
     "created_at" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updated_at" TIMESTAMP(3) NOT NULL,
 
@@ -72,7 +71,7 @@ ALTER TABLE "users" ADD CONSTRAINT "users_sharedId_fkey" FOREIGN KEY ("sharedId"
 ALTER TABLE "folders" ADD CONSTRAINT "folders_parent_id_fkey" FOREIGN KEY ("parent_id") REFERENCES "folders"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
-ALTER TABLE "folders" ADD CONSTRAINT "folders_iconId_fkey" FOREIGN KEY ("iconId") REFERENCES "icons"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
+ALTER TABLE "folders" ADD CONSTRAINT "folders_iconId_fkey" FOREIGN KEY ("iconId") REFERENCES "icons"("id") ON DELETE SET NULL ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "folders" ADD CONSTRAINT "folders_created_by_fkey" FOREIGN KEY ("created_by") REFERENCES "users"("id") ON DELETE RESTRICT ON UPDATE CASCADE;

@@ -1,16 +1,32 @@
 "use client";
-import { ArrowRightIcon, DismissIcon, FolderAddIcon } from "@/components/icons";
-import { CreateFolder, Portal } from "@/components/share";
-import { GetFolderById, GetPinnedFolder, GetRootFolder } from "@/lib/play";
+import {
+  ArrowRightIcon,
+  DeleteIcon,
+  DismissIcon,
+  FolderAddIcon,
+} from "@/components/icons";
+import { Folder, Portal } from "@/components/share";
+import {
+  DeleteFolderById,
+  GetFolderById,
+  GetPinnedFolder,
+  GetRootFolder,
+} from "@/lib/play";
 import { useQuery } from "@tanstack/react-query";
-import { ChangeEvent, createContext, ReactNode, useState } from "react";
+import {
+  ChangeEvent,
+  createContext,
+  ReactNode,
+  useEffect,
+  useState,
+} from "react";
 
 interface Props {
   children: ReactNode;
 }
 
 interface OpenBox {
-  createFolder: boolean;
+  folder: boolean;
 }
 
 interface FileProgress {
@@ -24,6 +40,10 @@ interface State {
   data: {
     files: FileProgress[] | null;
   };
+  select: {
+    pinnedFolder: string;
+    subfolder: string;
+  };
   activeFolder: string | null;
   openBox: OpenBox;
 }
@@ -33,9 +53,13 @@ const initialState: State = {
   data: {
     files: null,
   },
+  select: {
+    subfolder: "",
+    pinnedFolder: "",
+  },
   activeFolder: null,
   openBox: {
-    createFolder: false,
+    folder: false,
   },
 };
 
@@ -88,8 +112,6 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
     queryFn: fetchRootFolder,
   });
 
-  // console.log(rootFolderData);
-
   const { data: subfoldersData, isLoading: isSubfoldersLoading } = useQuery({
     queryKey: ["folder", state.activeFolder],
     queryFn: () => fetchFolderById(state.activeFolder!),
@@ -100,6 +122,15 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
     queryKey: ["pinned-folder"],
     queryFn: fetchPinnedFolder,
   });
+
+  useEffect(() => {
+    if (rootFolderData && "id" in rootFolderData && !state.activeFolder) {
+      setState((prev) => ({
+        ...prev,
+        activeFolder: rootFolderData.id,
+      }));
+    }
+  }, [rootFolderData, state.activeFolder]);
 
   // Actions
   const openFileExplorer = () =>
@@ -140,6 +171,16 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
       const previousFolder = folderQueue.pop() || null;
       setState((prev) => ({ ...prev, activeFolder: previousFolder }));
     }
+  };
+
+  const selectFolder = (type: "subfolder" | "pinnedFolder", id: string) => {
+    setState((prev) => ({
+      ...prev,
+      select: {
+        ...prev.select,
+        [type]: id,
+      },
+    }));
   };
 
   const updateFileProgress = (
@@ -255,7 +296,7 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
                           key={folder.id}
                           onClick={() => navigateToFolder(folder.id)}
                         >
-                          <img src="/icons/real-media-library.svg" alt="" />
+                          <img src="/icons/file-explorer.png" alt="" />
                           <span>{folder.name}</span>
                         </button>
                       ))}
@@ -271,8 +312,15 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
                     <button onClick={navigateBack}>
                       <ArrowRightIcon />
                     </button>
-                    <button onClick={() => openBox("createFolder")}>
+                    <button onClick={() => openBox("folder")}>
                       <FolderAddIcon />
+                    </button>
+                    <button
+                      onClick={async () => {
+                        await DeleteFolderById(state.select.subfolder);
+                      }}
+                    >
+                      <DeleteIcon />
                     </button>
                   </div>
                   <button onClick={close}>
@@ -283,21 +331,25 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
                 {isSubfoldersLoading ? (
                   <p>Loading subfolders...</p>
                 ) : state.activeFolder ? (
-                  subfoldersData?.subfolders.map((folder) => (
-                    <button
-                      key={folder.id}
-                      onClick={() => navigateToFolder(folder.id)}
-                    >
-                      <span>{folder.name}</span>
-                    </button>
-                  ))
+                  <div>
+                    {subfoldersData?.subfolders.map((folder) => (
+                      <button
+                        key={folder.id}
+                        onClick={() => selectFolder("subfolder", folder.id)}
+                        onDoubleClick={() => navigateToFolder(folder.id)}
+                      >
+                        <span>{folder.name}</span>
+                      </button>
+                    ))}
+                  </div>
                 ) : isPinnedFolderLoading ? (
                   "Loading..."
                 ) : (
                   pinnedFolders?.map((folder) => (
                     <button
                       key={folder.id}
-                      onClick={() => navigateToFolder(folder.id)}
+                      onClick={() => selectFolder("pinnedFolder", folder.id)}
+                      onDoubleClick={() => navigateToFolder(folder.id)}
                     >
                       {folder.name}
                     </button>
@@ -309,7 +361,12 @@ export const FileManagerProvider: React.FC<Props> = ({ children }) => {
         )}
       </Portal>
 
-      {state.openBox.createFolder && <CreateFolder closeBox={() => closeBox("createFolder")} />}
+      {state.openBox.folder && (
+        <Folder
+          parentId={state.activeFolder}
+          closeBox={() => closeBox("folder")}
+        />
+      )}
 
       {children}
     </FileManagerContext.Provider>
